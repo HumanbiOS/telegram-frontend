@@ -23,8 +23,8 @@ def process(update, context):
     else:
         text = update.effective_message.text
     payload = {
-        "security_token": settings.SERVER_TOKEN,
-        "via_instance": settings.INSTANCE_NAME,
+        "security_token": context.bot_data["infos"]["token"],
+        "via_instance": context.bot_data["infos"]["name"],
         "service_in": "telegram",
         "user": {
             "user_id": sender_id,
@@ -42,7 +42,8 @@ def process(update, context):
     }
     encoded_data = json.dumps(payload).encode('utf-8')
     print(payload)
-    response = context.bot.request._con_pool.request("POST", settings.SERVER_URL, body=encoded_data, headers=H)
+    response = context.bot.request._con_pool.request("POST", f"{settings.SERVER_URL}/api/process_message",
+                                                     body=encoded_data, headers=H)
     print(response.data)
     response_dict = json.loads(response.data)
     print(response_dict)

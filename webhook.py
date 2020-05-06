@@ -45,7 +45,6 @@ class MainHandler(RequestHandler):
         self.set_header('content-type', 'application/json')
 
 
-
 def make_app(bot):
     return tornado.web.Application([
         url(r"/", MainHandler, dict(bot=bot)),
