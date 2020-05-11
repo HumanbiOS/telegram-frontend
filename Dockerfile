@@ -12,7 +12,7 @@ RUN apk add --no-cache \
 COPY . app/
 WORKDIR /app
 # Bulk install build deps
-RUN apk --no-cache add lapack libstdc++ \
+RUN apk --no-cache add lapack libstdc++ libressl-dev musl-dev libffi-dev\
  && apk add --virtual .build-deps python3-dev libffi-dev build-base g++ gcc gfortran musl-dev lapack-dev \
  && pip3 install --upgrade pip wheel \
  && pip3 install -r requirements.txt \
