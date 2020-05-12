@@ -1,12 +1,15 @@
 from threading import Thread
 import tornado.ioloop
 import tornado.web
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Bot, KeyboardButton, ReplyKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Bot, KeyboardButton, ReplyKeyboardMarkup, \
+    ReplyKeyboardRemove
 from tornado.escape import json_decode
 from tornado.web import url, RequestHandler
 from telegram.utils.webhookhandler import WebhookServer
 
 from utils import build_menu
+
+cache = {}
 
 
 class MainHandler(RequestHandler):
@@ -20,28 +23,34 @@ class MainHandler(RequestHandler):
     def post(self):
         print(self.args)
         chat_id = self.args["chat"]["chat_id"]
+        if chat_id not in cache:
+            cache[chat_id] = {"buttons": False}
         if "message" in self.args:
             text = self.args["message"]["text"]
         else:
             text = False
-        if "buttons" in self.args:
+        if self.args["buttons"]:
             if self.args["buttons_type"] == "inline":
                 buttons = []
                 for button in self.args["buttons"]:
                     buttons.append(InlineKeyboardButton(text=button["text"], callback_data=button["value"]))
                 menu = InlineKeyboardMarkup(build_menu(buttons, 4))
             else:
+                cache[chat_id]["buttons"] = True
                 buttons = []
                 for button in self.args["buttons"]:
                     buttons.append(KeyboardButton(text=button["text"]))
-                menu = ReplyKeyboardMarkup(build_menu(buttons, 2))
+                menu = ReplyKeyboardMarkup(build_menu(buttons, 2), resize_keyboard=True)
         else:
             menu = False
         if text:
             if menu:
                 self.bot.send_message(chat_id=chat_id, text=text, reply_markup=menu)
             else:
-                self.bot.send_message(chat_id=chat_id, text=text)
+                if cache[chat_id]["buttons"]:
+                    self.bot.send_message(chat_id=chat_id, text=text, reply_markup=ReplyKeyboardRemove())
+                else:
+                    self.bot.send_message(chat_id=chat_id, text=text)
         self.set_header('content-type', 'application/json')
 
 

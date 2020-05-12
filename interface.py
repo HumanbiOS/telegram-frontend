@@ -17,6 +17,7 @@ def setup(bot):
     response_dict = json.loads(response.data)
     return response_dict["name"], response_dict["token"]
 
+
 def main():
     updater = Updater(token=settings.BOT_TOKEN, use_context=True)
     dp = updater.dispatcher
