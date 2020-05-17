@@ -66,7 +66,7 @@ class OwnWebhook(Thread):
         super().__init__()
         app = make_app(bot)
         # TODO enter setting
-        self.webhooks = WebhookServer("127.0.0.1", 8888, app, None)
+        self.webhooks = WebhookServer("0.0.0.0", 8888, app, None)
 
     def run(self) -> None:
         self.webhooks.serve_forever()
