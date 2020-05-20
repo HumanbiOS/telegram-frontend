@@ -10,7 +10,10 @@ import settings
 def setup(bot):
     payload = {
         "security_token": settings.SERVER_TOKEN,
-        "url": f"{settings.INSTANCE_URL}"
+        "url": settings.INSTANCE_URL,
+        "broadcast": settings.TELEGRAM_BROADCAST,
+        "psychological_room": settings.TELEGRAM_PSYCHOLOGIST_ROOM,
+        "doctor_room": settings.TELEGRAM_DOCTOR_ROOM
     }
     encoded_data = json.dumps(payload).encode('utf-8')
     response = bot.request._con_pool.request("POST", f"{settings.SERVER_URL}/api/setup", body=encoded_data)
