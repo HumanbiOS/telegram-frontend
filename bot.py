@@ -30,7 +30,8 @@ def process(update, context):
             "user_id": sender_id,
             "first_name": user.first_name,
             "last_name": user.last_name,
-            "username": user.username
+            "username": user.username,
+            "lang_code": user.language_code
         },
         "chat": {
             "chat_id": sender_id
