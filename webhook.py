@@ -33,8 +33,8 @@ class MainHandler(RequestHandler):
             caption = False
             if "message" in self.args:
                 caption = self.args["message"]["text"]
-            for file_url in file_urls:
-                file_urls.append(url["payload"])
+            for file_url in self.args["file"]:
+                file_urls.append(file_url["payload"])
         if self.args["buttons"]:
             if self.args["buttons_type"] == "inline":
                 buttons = []
