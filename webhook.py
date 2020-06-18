@@ -9,7 +9,7 @@ from telegram.utils.webhookhandler import WebhookServer
 
 from utils import build_menu
 
-cache = {}
+cache = {"file_ids": {}}
 
 
 class MainHandler(RequestHandler):
@@ -25,10 +25,16 @@ class MainHandler(RequestHandler):
         chat_id = self.args["chat"]["chat_id"]
         if chat_id not in cache:
             cache[chat_id] = {"buttons": False}
-        if "message" in self.args:
+        text = False
+        if "message" in self.args and not self.args["file"]:
             text = self.args["message"]["text"]
-        else:
-            text = False
+        file_urls = []
+        if "file" in self.args:
+            caption = False
+            if "message" in self.args:
+                caption = self.args["message"]["text"]
+            for file_url in file_urls:
+                file_urls.append(url["payload"])
         if self.args["buttons"]:
             if self.args["buttons_type"] == "inline":
                 buttons = []
@@ -51,6 +57,13 @@ class MainHandler(RequestHandler):
                     self.bot.send_message(chat_id=chat_id, text=text, reply_markup=ReplyKeyboardRemove())
                 else:
                     self.bot.send_message(chat_id=chat_id, text=text)
+        if file_urls:
+            for f_url in file_urls:
+                if f_url in cache["file_ids"]:
+                    self.bot.send_photo(chat_id, cache["file_ids"][f_url], caption)
+                else:
+                    message = self.bot.send_photo(chat_id, f_url, caption)
+                    cache["file_ids"][f_url] = message.photo[-1].file_id
         self.set_header('content-type', 'application/json')
 
 
