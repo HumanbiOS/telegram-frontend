@@ -53,10 +53,7 @@ class MainHandler(RequestHandler):
             if menu:
                 self.bot.send_message(chat_id=chat_id, text=text, reply_markup=menu)
             else:
-                if cache[chat_id]["buttons"]:
-                    self.bot.send_message(chat_id=chat_id, text=text, reply_markup=ReplyKeyboardRemove())
-                else:
-                    self.bot.send_message(chat_id=chat_id, text=text)
+                self.bot.send_message(chat_id=chat_id, text=text, reply_markup=ReplyKeyboardRemove())
         if file_urls:
             for f_url in file_urls:
                 if f_url in cache["file_ids"]:
