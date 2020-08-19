@@ -5,8 +5,6 @@ services:
     container_name: humanbios-tg
     image: humanbios-tg
     restart: unless-stopped
-    ports:
-    - 8888:8888
 
 networks:
   default:
